@@ -14,7 +14,10 @@
         "baseUrl": "../src",
 
         "importsNotUsedAsValues": "preserve",
-        "isolatedModules": true
+        "isolatedModules": true,
+
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "include": ["../src"]
 }

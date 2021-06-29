@@ -15,14 +15,20 @@
         "dist/**"
     ],
     "dependencies": {
+        "@chakra-ui/react": "1.6.4",
+        "@emotion/react": "11.4.0",
+        "@emotion/styled": "11.3.0",
         "coil-react": "1.0.4",
-        "jamyth-web-util": "1.0.4"
+        "framer-motion": "4.1.17",
+        "jamyth-web-util": "1.0.4",
+        "react-beautiful-dnd": "13.1.0"
     },
     "devDependencies": {
         "@iamyth/logger": "1.0.4",
         "@iamyth/prettier-config": "0.0.1",
         "@iamyth/webpack-runner": "1.0.9",
         "@types/node": "15.12.5",
+        "@types/react-beautiful-dnd": "13.0.0",
         "coil-react-cli": "1.0.1",
         "eslint-config-iamyth": "0.0.7",
         "prettier": "2.3.2",
