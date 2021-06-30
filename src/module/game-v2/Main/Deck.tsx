@@ -20,6 +20,7 @@ export const Deck = React.memo(() => {
         // eslint-disable-next-line react/no-array-index-key -- only index
         return <Card.Background position="absolute" left={i * 6} key={i} />;
     });
+    const isLastIndex = solitaireV2.isLastIndex();
 
     return (
         <Flex>
@@ -31,7 +32,7 @@ export const Deck = React.memo(() => {
                 }}
                 cursor="pointer"
             >
-                {cards}
+                {isLastIndex ? <Card.Empty /> : cards}
             </Box>
             <Box position="relative">
                 {solitaireV2.getCurrentDeckPage().map((_, i) => {

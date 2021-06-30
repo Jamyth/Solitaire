@@ -150,8 +150,8 @@ export class SolitaireV2 {
     }
 
     // --- Getter ---
-    getCurrentIndex(): number {
-        return this.currentDeckIndex;
+    isLastIndex(): boolean {
+        return this.currentDeckIndex === this.decks.length - 1;
     }
 
     getCurrentDeckPage(): CardV2[] {

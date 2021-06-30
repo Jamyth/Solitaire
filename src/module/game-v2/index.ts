@@ -13,7 +13,7 @@ const initialState: State = {
 export let solitaireV2: SolitaireV2 | null = null;
 
 export const newGame = () => {
-    solitaireV2 = new SolitaireV2();
+    solitaireV2 = new SolitaireV2('medium');
 };
 
 export const GameV2State = Recoil.atom({
