@@ -17,7 +17,7 @@ interface ColumnV2 {
 
 export class SolitaireV2 {
     static columnSize: number = 7;
-    static pageSize: number = 1;
+    static pageSize: number = 3;
     static isRed(card: CardV2): boolean {
         return ['hearts', 'diamonds'].includes(card.type);
     }
@@ -28,7 +28,7 @@ export class SolitaireV2 {
     private columns: ColumnV2[];
 
     // Initialize all variables
-    constructor(cards?: CardV2[], difficulty: SolitaireDifficulty = 'easy') {
+    constructor(difficulty: SolitaireDifficulty = 'easy', cards?: CardV2[]) {
         this.currentDeckIndex = 0;
         this.decks = [];
         this.house = {
