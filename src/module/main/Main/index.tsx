@@ -13,7 +13,7 @@ export const Main = React.memo(() => {
                 {ObjectUtil.toArray(NavigationService, (path, { component }) => (
                     <Route exact key={path} path={path} component={component} />
                 ))}
-                <Redirect to="/game" />
+                <Redirect to="/lobby" />
             </Switch>
         </ChakraProvider>
     );

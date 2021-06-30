@@ -15,6 +15,8 @@ export const Main = React.memo(() => {
             onClick={reset}
             color="white"
             h="100vh"
+            maxH="100vh"
+            overflowY="scroll"
             flexDirection="column"
             p={4}
             background="radial-gradient(circle at 50% 0,#016d29,#01431e 62%)"
