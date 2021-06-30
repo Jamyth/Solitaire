@@ -12,6 +12,6 @@ export const NavigationService: Record<Route, RouteConfig> = {
         component: async(() => import('module/lobby'), 'MainComponent'),
     },
     '/game': {
-        component: async(() => import('module/game'), 'MainComponent'),
+        component: async(() => import('module/game-v2'), 'MainComponent'),
     },
 };

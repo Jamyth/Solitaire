@@ -1,32 +1,57 @@
 import Recoil from 'recoil';
-import { injectLifeCycle, useCoilState, useHistory } from 'coil-react';
-import { Main } from './Main'
+import { injectLifeCycle, useCoilState } from 'coil-react';
+import { Main } from './Main';
 import type { State } from './type';
-import type { Location } from 'history'
+import { SolitaireV2 } from 'util/SolitaireV2';
 
-const initialState: State = {}
+const initialState: State = {
+    selectedCardIndex: null,
+    selectedColumnIndex: null,
+    selectedCardType: null,
+};
+
+export let solitaireV2: SolitaireV2 | null = null;
 
 export const GameV2State = Recoil.atom({
-    key: "GameV2State",
-    default: initialState
+    key: 'GameV2State',
+    default: initialState,
 });
 
 export const useGameV2Action = () => {
-    const { getState, setState } = useCoilState(GameV2State);
-    const history = useHistory<any>();
+    const { setState } = useCoilState(GameV2State);
 
     const onMount = () => {
-        // TODO
-    }
+        if (!solitaireV2) {
+            solitaireV2 = new SolitaireV2();
+        }
+    };
 
-    const onRouteMatched = (routeParameter: any, location: Location<Readonly<any> | undefined>) => {
-        // TODO
-    }
+    const selectDeckCard = (index: number) => {
+        setState((state) => {
+            state.selectedCardType = 'deck';
+            state.selectedCardIndex = index;
+            state.selectedColumnIndex = null;
+        });
+    };
+
+    const selectColumnCard = (cardIndex: number, columnIndex: number) => {
+        setState((state) => {
+            state.selectedCardType = 'column';
+            state.selectedCardIndex = cardIndex;
+            state.selectedColumnIndex = columnIndex;
+        });
+    };
+
+    const reset = () => {
+        setState(initialState);
+    };
 
     return {
         onMount,
-        onRouteMatched
-    }
-}
+        selectDeckCard,
+        selectColumnCard,
+        reset,
+    };
+};
 
-export const MainComponent = injectLifeCycle<any, any>(Main, useGameV2Action)
+export const MainComponent = injectLifeCycle<any, any>(Main, useGameV2Action);

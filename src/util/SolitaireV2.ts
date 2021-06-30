@@ -1,5 +1,6 @@
 import { CardUtil } from './CardUtil';
 import { ArrayUtil } from 'jamyth-web-util';
+import { ForceRender } from './decorators/ForceRender';
 
 export type CardTypeV2 = 'diamonds' | 'clubs' | 'hearts' | 'spades';
 
@@ -14,7 +15,10 @@ interface ColumnV2 {
 
 export class SolitaireV2 {
     private static readonly columnSize: number = 7;
-    private static readonly pageSize: number = 3;
+    private static readonly pageSize: number = 1;
+    static isRed(card: CardV2): boolean {
+        return ['hearts', 'diamonds'].includes(card.type);
+    }
 
     private currentDeckIndex: number;
     private decks: CardV2[][];
@@ -37,10 +41,15 @@ export class SolitaireV2 {
     }
 
     // --- Setter ---
+    @ForceRender()
     toNextDeckPage(): void {
+        if (this.decks.length > 1) {
+            this.decks = this.decks.filter((_) => _.length);
+        }
         this.currentDeckIndex = (this.currentDeckIndex + 1) % this.decks.length;
     }
 
+    @ForceRender()
     flipHiddenCard(colIndex: number): void {
         const column = this.getColumn(colIndex);
         if (this.canRevealCard(column)) {
@@ -51,6 +60,7 @@ export class SolitaireV2 {
     }
 
     // Deck To Column
+    @ForceRender()
     pickDeckToColumn(colIndex: number) {
         const column = this.getColumn(colIndex);
         const currentPage = this.decks[this.currentDeckIndex];
@@ -83,6 +93,7 @@ export class SolitaireV2 {
     }
 
     // Column To Column
+    @ForceRender()
     pickColumnToColumn(fromColIndex: number, fromCardIndex: number, toColIndex: number) {
         const fromColumn = this.getColumn(fromColIndex);
         const toColumn = this.getColumn(toColIndex);
@@ -118,6 +129,7 @@ export class SolitaireV2 {
     }
 
     // To House
+    @ForceRender()
     pickDeckToHouse(): void {
         const currentPage = this.decks[this.currentDeckIndex];
         if (!currentPage.length) {
@@ -127,6 +139,7 @@ export class SolitaireV2 {
         this.pickLastCardToHouse(currentPage);
     }
 
+    @ForceRender()
     pickColumnToHouse(colIndex: number, cardIndex: number) {
         const column = this.getColumn(colIndex);
         if (this.isLastCard(cardIndex, column.cards)) {
@@ -135,6 +148,10 @@ export class SolitaireV2 {
     }
 
     // --- Getter ---
+    getCurrentIndex(): number {
+        return this.currentDeckIndex;
+    }
+
     getCurrentDeckPage(): CardV2[] {
         return this.decks[this.currentDeckIndex];
     }
@@ -154,7 +171,53 @@ export class SolitaireV2 {
     isVictory(): boolean {
         return Object.values(this.house).every((house) => house.length === 13);
     }
-    // --- End of Getter ---
+    // --- End of Getter --
+
+    // --- Utility ---
+    canPushToHouse(card: CardV2): boolean {
+        const house = this.getHouse(card.type);
+        return house.length === card.value;
+    }
+
+    getLastCard(cards: CardV2[]): CardV2 {
+        if (!cards.length) {
+            throw new Error('Source Cards is empty');
+        }
+        return cards[cards.length - 1];
+    }
+
+    isLastCard(cardIndex: number, cards: CardV2[]): boolean {
+        return cardIndex === cards.length - 1;
+    }
+
+    isEmptyColumn(column: ColumnV2): boolean {
+        return column.cards.length === 0 && column.hiddenCards.length === 0;
+    }
+
+    isKing(card: CardV2): boolean {
+        return card.value === 12;
+    }
+
+    canRevealCard(column: ColumnV2): boolean {
+        return column.hiddenCards.length !== 0 && column.cards.length === 0;
+    }
+
+    canStackCard(topCard: CardV2, bottomCard: CardV2): boolean {
+        const colorPair = [SolitaireV2.isRed(topCard), SolitaireV2.isRed(bottomCard)].sort();
+        if (!ArrayUtil.areSame([false, true], colorPair)) {
+            return false;
+        }
+        return topCard.value === bottomCard.value + 1;
+    }
+
+    getCardByIndex(cardIndex: number, cards: CardV2[]): CardV2 {
+        const card = cards[cardIndex];
+        if (card === undefined) {
+            throw new Error(`Cannot get card`);
+        }
+        return card;
+    }
+    // --- End of Utility ---
 
     private pickLastCardToHouse(cards: CardV2[]) {
         if (this.canPushToHouse(this.getLastCard(cards))) {
@@ -164,56 +227,6 @@ export class SolitaireV2 {
             house.push(lastCard);
         }
     }
-
-    // --- Utility ---
-    private canPushToHouse(card: CardV2): boolean {
-        const house = this.getHouse(card.type);
-        return house.length === card.value;
-    }
-
-    private getLastCard(cards: CardV2[]): CardV2 {
-        if (!cards.length) {
-            throw new Error('Source Cards is empty');
-        }
-        return cards[cards.length - 1];
-    }
-
-    private isLastCard(cardIndex: number, cards: CardV2[]): boolean {
-        return cardIndex === cards.length - 1;
-    }
-
-    private isEmptyColumn(column: ColumnV2): boolean {
-        return column.cards.length === 0 && column.hiddenCards.length === 0;
-    }
-
-    private isKing(card: CardV2): boolean {
-        return card.value === 12;
-    }
-
-    private canRevealCard(column: ColumnV2): boolean {
-        return column.hiddenCards.length !== 0 && column.cards.length === 0;
-    }
-
-    private canStackCard(topCard: CardV2, bottomCard: CardV2): boolean {
-        const colorPair = [this.isRed(topCard), this.isRed(bottomCard)].sort();
-        if (!ArrayUtil.areSame([false, true], colorPair)) {
-            return false;
-        }
-        return topCard.value === bottomCard.value + 1;
-    }
-
-    private isRed(card: CardV2): boolean {
-        return ['hearts', 'diamonds'].includes(card.type);
-    }
-
-    private getCardByIndex(cardIndex: number, cards: CardV2[]): CardV2 {
-        const card = cards[cardIndex];
-        if (card === undefined) {
-            throw new Error(`Cannot get card`);
-        }
-        return card;
-    }
-    // --- End of Utility ---
 
     // --- Setup game ---
     private init(): void {
@@ -235,7 +248,8 @@ export class SolitaireV2 {
     }
 
     private initDecks(cards: CardV2[]): void {
-        for (let i = 0; i < SolitaireV2.pageSize; i++) {
+        const maxLoop = Math.ceil(cards.length / SolitaireV2.pageSize);
+        for (let i = 0; i < maxLoop; i++) {
             this.decks.push(cards.splice(0, SolitaireV2.pageSize));
         }
     }

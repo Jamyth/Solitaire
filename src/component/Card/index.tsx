@@ -1,8 +1,8 @@
 import React from 'react';
 import { Background } from './Background';
 import { Empty } from './Empty';
-import type { Card as CardProps } from 'util/Solitaire';
-import { Solitaire } from 'util/Solitaire';
+import type { CardV2 } from 'util/SolitaireV2';
+import { SolitaireV2 } from 'util/SolitaireV2';
 import { CardUtil } from 'util/CardUtil';
 import type { BoxProps } from '@chakra-ui/react';
 import { Box, Flex } from '@chakra-ui/react';
@@ -14,7 +14,7 @@ export interface BaseProps
     > {}
 
 interface Props extends BaseProps {
-    content: CardProps;
+    content: CardV2;
 }
 
 export class Card extends React.PureComponent<Props> {
@@ -25,9 +25,7 @@ export class Card extends React.PureComponent<Props> {
         const { content, ...props } = this.props;
         const symbol = CardUtil.getSymbol(content.type);
         const value = CardUtil.getValue(content.value);
-        if (!content.visible) {
-            return <Background />;
-        }
+
         return (
             <Flex
                 flexDirection="column"
@@ -38,7 +36,7 @@ export class Card extends React.PureComponent<Props> {
                 backgroundColor="white"
                 shadow="md"
                 userSelect="none"
-                color={Solitaire.isRed(content) ? 'red.600' : 'black'}
+                color={SolitaireV2.isRed(content) ? 'red.600' : 'black'}
                 {...props}
             >
                 <Box>
