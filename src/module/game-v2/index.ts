@@ -12,6 +12,10 @@ const initialState: State = {
 
 export let solitaireV2: SolitaireV2 | null = null;
 
+export const newGame = () => {
+    solitaireV2 = new SolitaireV2();
+};
+
 export const GameV2State = Recoil.atom({
     key: 'GameV2State',
     default: initialState,
@@ -22,7 +26,7 @@ export const useGameV2Action = () => {
 
     const onMount = () => {
         if (!solitaireV2) {
-            solitaireV2 = new SolitaireV2();
+            newGame();
         }
     };
 
