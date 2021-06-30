@@ -8,14 +8,16 @@ export class CardV2 {
     constructor(public readonly type: CardTypeV2, public readonly value: number) {}
 }
 
+export type SolitaireDifficulty = 'easy' | 'medium' | 'hard';
+
 interface ColumnV2 {
     hiddenCards: CardV2[];
     cards: CardV2[];
 }
 
 export class SolitaireV2 {
-    private static readonly columnSize: number = 7;
-    private static readonly pageSize: number = 1;
+    static columnSize: number = 7;
+    static pageSize: number = 1;
     static isRed(card: CardV2): boolean {
         return ['hearts', 'diamonds'].includes(card.type);
     }
@@ -26,7 +28,7 @@ export class SolitaireV2 {
     private columns: ColumnV2[];
 
     // Initialize all variables
-    constructor() {
+    constructor(cards?: CardV2[], difficulty: SolitaireDifficulty = 'easy') {
         this.currentDeckIndex = 0;
         this.decks = [];
         this.house = {
@@ -36,8 +38,8 @@ export class SolitaireV2 {
             spades: [],
         };
         this.columns = [];
-
-        this.init();
+        this.setDifficulty(difficulty);
+        this.init(cards);
     }
 
     // --- Setter ---
@@ -229,8 +231,8 @@ export class SolitaireV2 {
     }
 
     // --- Setup game ---
-    private init(): void {
-        const restCards = this.initColumn(CardUtil.initV2());
+    private init(cards?: CardV2[]): void {
+        const restCards = this.initColumn(cards ?? CardUtil.initV2());
         this.initDecks(restCards);
     }
 
@@ -251,6 +253,20 @@ export class SolitaireV2 {
         const maxLoop = Math.ceil(cards.length / SolitaireV2.pageSize);
         for (let i = 0; i < maxLoop; i++) {
             this.decks.push(cards.splice(0, SolitaireV2.pageSize));
+        }
+    }
+
+    private setDifficulty(difficulty: SolitaireDifficulty) {
+        switch (difficulty) {
+            case 'easy':
+                SolitaireV2.pageSize = 1;
+                break;
+            case 'medium':
+                SolitaireV2.pageSize = 3;
+                break;
+            case 'hard':
+                SolitaireV2.pageSize = 5;
+                break;
         }
     }
     // -- End of Setup game ---

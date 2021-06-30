@@ -5,7 +5,7 @@ import type { CardV2 } from 'util/SolitaireV2';
 import { SolitaireV2 } from 'util/SolitaireV2';
 import { CardUtil } from 'util/CardUtil';
 import type { BoxProps } from '@chakra-ui/react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex, Image } from '@chakra-ui/react';
 
 export interface BaseProps
     extends Omit<
@@ -39,17 +39,17 @@ export class Card extends React.PureComponent<Props> {
                 color={SolitaireV2.isRed(content) ? 'red.600' : 'black'}
                 {...props}
             >
-                <Box>
-                    {value}
-                    <Box>{symbol}</Box>
-                </Box>
-                <Flex fontSize="30px" flex={1} justifyContent="center" alignItems="center">
-                    {symbol}
+                <Flex flexDirection="column">
+                    <span>{value}</span>
+                    <span>{symbol}</span>
                 </Flex>
-                <Box textAlign="right">
-                    <Box>{symbol}</Box>
-                    {value}
-                </Box>
+                <Flex fontSize="30px" flex={1} justifyContent="center" alignItems="center">
+                    {content.value > 9 ? <Image maxW="50%" src={require('./asset/king.jpeg')} /> : symbol}
+                </Flex>
+                <Flex flexDirection="column" transform="rotate(180deg)">
+                    <span>{value}</span>
+                    <span>{symbol}</span>
+                </Flex>
             </Flex>
         );
     }

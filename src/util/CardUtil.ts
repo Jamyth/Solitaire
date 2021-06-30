@@ -1,23 +1,5 @@
-import type { CardType, Card } from './Solitaire';
 import { CardV2 } from './SolitaireV2';
 import type { CardTypeV2 } from './SolitaireV2';
-
-function init() {
-    const types: CardType[] = ['diamonds', 'clubs', 'hearts', 'spades'];
-    const values = 13;
-    const cards: Card[] = [];
-    for (const type of types) {
-        for (let value = 0; value < values; value++) {
-            const card: Card = {
-                type,
-                value,
-                visible: false,
-            };
-            cards.push(card);
-        }
-    }
-    return shuffle(cards);
-}
 
 function initV2() {
     const types: CardTypeV2[] = ['diamonds', 'clubs', 'hearts', 'spades'];
@@ -31,7 +13,7 @@ function initV2() {
     return shuffle(cards);
 }
 
-function shuffle<T extends Card[] | CardV2[]>(cards: T): T {
+function shuffle<T extends CardV2[]>(cards: T): T {
     let currentIndex = cards.length;
     let randomIndex;
 
@@ -44,7 +26,7 @@ function shuffle<T extends Card[] | CardV2[]>(cards: T): T {
     return cards;
 }
 
-function getSymbol(type: CardType | CardTypeV2): string {
+function getSymbol(type: CardTypeV2): string {
     switch (type) {
         case 'clubs':
             return '♣';
@@ -72,20 +54,9 @@ function getValue(value: number): string {
     }
 }
 
-function getCard(str: `${CardType}.${number}`): Card {
-    const [type, value] = str.split('.');
-    return {
-        type,
-        value: parseInt(value, 10),
-        visible: true,
-    } as Card;
-}
-
 export const CardUtil = Object.freeze({
-    init,
     initV2,
     shuffle,
     getSymbol,
     getValue,
-    getCard,
 });
